@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AssetVal Pro - Professional Asset Valuation System</title>
+    <meta name="description" content="Professional asset valuation system with Market Value and Liquidation Value calculations, comparison methodology, and PDF report generation.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                        <path d="M2 17l10 5 10-5"/>
+                        <path d="M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <span class="logo-text">AssetVal<span class="accent">Pro</span></span>
+            </div>
+            
+            <nav class="main-nav">
+                <a href="#" class="nav-item active" data-section="dashboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"/>
+                        <rect x="14" y="3" width="7" height="7"/>
+                        <rect x="14" y="14" width="7" height="7"/>
+                        <rect x="3" y="14" width="7" height="7"/>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="#" class="nav-item" data-section="valuation">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                    </svg>
+                    New Valuation
+                </a>
+                <a href="#" class="nav-item" data-section="comparison">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 20V10M12 20V4M6 20v-6"/>
+                    </svg>
+                    Comparison
+                </a>
+                <a href="#" class="nav-item" data-section="reports">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                        <polyline points="10 9 9 9 8 9"/>
+                    </svg>
+                    Reports
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">SV</div>
+                    <div class="user-details">
+                        <span class="user-name">Valuator</span>
+                        <span class="user-role">Professional</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="content-section active">
+                <header class="section-header">
+                    <div>
+                        <h1>Dashboard</h1>
+                        <p class="subtitle">Overview of your valuation activities</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" onclick="showSection('valuation')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                            </svg>
+                            New Valuation
+                        </button>
+                    </div>
+                </header>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="totalValuations">0</span>
+                            <span class="stat-label">Total Valuations</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                                <polyline points="17 6 23 6 23 12"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="totalMarketValue">$0</span>
+                            <span class="stat-label">Total Market Value</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 20V10M12 20V4M6 20v-6"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="totalLiquidation">$0</span>
+                            <span class="stat-label">Total Liquidation Value</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="reportsGenerated">0</span>
+                            <span class="stat-label">Reports Generated</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="card recent-valuations">
+                        <div class="card-header">
+                            <h3>Recent Valuations</h3>
+                            <button class="btn btn-ghost" onclick="showSection('valuation')">View All</button>
+                        </div>
+                        <div class="card-body">
+                            <div id="recentValuationsList" class="valuations-list">
+                                <div class="empty-state">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                                    </svg>
+                                    <p>No valuations yet. Create your first valuation!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card methodology-overview">
+                        <div class="card-header">
+                            <h3>Valuation Methodology</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="methodology-list">
+                                <div class="methodology-item">
+                                    <div class="methodology-icon">📊</div>
+                                    <div class="methodology-info">
+                                        <h4>Market Approach</h4>
+                                        <p>Compares asset to similar items sold in the market</p>
+                                    </div>
+                                </div>
+                                <div class="methodology-item">
+                                    <div class="methodology-icon">🏗️</div>
+                                    <div class="methodology-info">
+                                        <h4>Cost Approach</h4>
+                                        <p>Based on replacement cost minus depreciation</p>
+                                    </div>
+                                </div>
+                                <div class="methodology-item">
+                                    <div class="methodology-icon">💰</div>
+                                    <div class="methodology-info">
+                                        <h4>Income Approach</h4>
+                                        <p>Present value of future economic benefits</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Valuation Section -->
+            <section id="valuation" class="content-section">
+                <header class="section-header">
+                    <div>
+                        <h1>New Valuation</h1>
+                        <p class="subtitle">Calculate Market Value and Liquidation Value</p>
+                    </div>
+                </header>
+
+                <div class="valuation-form-container">
+                    <form id="valuationForm" class="valuation-form">
+                        <div class="form-section">
+                            <h3 class="form-section-title">
+                                <span class="section-number">1</span>
+                                Asset Information
+                            </h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="assetName">Asset Name</label>
+                                    <input type="text" id="assetName" placeholder="e.g., Industrial Machinery XL-500" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="assetCategory">Category</label>
+                                    <select id="assetCategory" required>
+                                        <option value="">Select Category</option>
+                                        <option value="machinery">Machinery & Equipment</option>
+                                        <option value="vehicle">Vehicle & Transport</option>
+                                        <option value="property">Real Estate Property</option>
+                                        <option value="inventory">Inventory & Stock</option>
+                                        <option value="electronics">Electronics & IT</option>
+                                        <option value="furniture">Furniture & Fixtures</option>
+                                        <option value="other">Other Assets</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="acquisitionDate">Acquisition Date</label>
+                                    <input type="date" id="acquisitionDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="acquisitionCost">Acquisition Cost ($)</label>
+                                    <input type="number" id="acquisitionCost" placeholder="0.00" min="0" step="0.01" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3 class="form-section-title">
+                                <span class="section-number">2</span>
+                                Valuation Parameters
+                            </h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="condition">Asset Condition</label>
+                                    <select id="condition" required>
+                                        <option value="">Select Condition</option>
+                                        <option value="excellent">Excellent (90-100%)</option>
+                                        <option value="good">Good (70-89%)</option>
+                                        <option value="fair">Fair (50-69%)</option>
+                                        <option value="poor">Poor (30-49%)</option>
+                                        <option value="salvage">Salvage (<30%)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="usefulLife">Useful Life (Years)</label>
+                                    <input type="number" id="usefulLife" placeholder="e.g., 10" min="1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="marketComparable">Market Comparable ($)</label>
+                                    <input type="number" id="marketComparable" placeholder="0.00" min="0" step="0.01">
+                                    <span class="form-hint">Similar asset's current market price</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="liquidationFactor">Liquidation Factor (%)</label>
+                                    <input type="number" id="liquidationFactor" placeholder="40-70" min="10" max="90" value="50">
+                                    <span class="form-hint">Percentage of market value for quick sale</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3 class="form-section-title">
+                                <span class="section-number">3</span>
+                                Additional Factors
+                            </h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="marketDemand">Market Demand</label>
+                                    <select id="marketDemand">
+                                        <option value="high">High Demand (+10%)</option>
+                                        <option value="normal" selected>Normal Demand (0%)</option>
+                                        <option value="low">Low Demand (-10%)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="economicCondition">Economic Conditions</label>
+                                    <select id="economicCondition">
+                                        <option value="boom">Economic Boom (+5%)</option>
+                                        <option value="stable" selected>Stable (0%)</option>
+                                        <option value="recession">Recession (-10%)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group full-width">
+                                    <label for="notes">Valuation Notes</label>
+                                    <textarea id="notes" rows="3" placeholder="Additional observations or special considerations..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset Form</button>
+                            <button type="submit" class="btn btn-primary btn-large">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                    <polyline points="22 4 12 14.01 9 11.01"/>
+                                </svg>
+                                Calculate Valuation
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Results Panel -->
+                    <div id="resultsPanel" class="results-panel hidden">
+                        <div class="results-header">
+                            <h3>Valuation Results</h3>
+                            <span class="results-badge">Completed</span>
+                        </div>
+                        
+                        <div class="results-grid">
+                            <div class="result-card market-value">
+                                <div class="result-label">Market Value</div>
+                                <div class="result-value" id="marketValueResult">$0.00</div>
+                                <div class="result-method">Based on comparable sales & adjustments</div>
+                            </div>
+                            <div class="result-card liquidation-value">
+                                <div class="result-label">Liquidation Value</div>
+                                <div class="result-value" id="liquidationValueResult">$0.00</div>
+                                <div class="result-method">Quick sale value estimate</div>
+                            </div>
+                        </div>
+
+                        <div class="results-breakdown">
+                            <h4>Calculation Breakdown</h4>
+                            <div class="breakdown-table" id="breakdownTable">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="results-actions">
+                            <button class="btn btn-secondary" onclick="addToComparison()">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M18 20V10M12 20V4M6 20v-6"/>
+                                </svg>
+                                Add to Comparison
+                            </button>
+                            <button class="btn btn-primary" onclick="generatePDF()">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                    <line x1="12" y1="18" x2="12" y2="12"/>
+                                    <line x1="9" y1="15" x2="15" y2="15"/>
+                                </svg>
+                                Generate PDF Report
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Comparison Section -->
+            <section id="comparison" class="content-section">
+                <header class="section-header">
+                    <div>
+                        <h1>Asset Comparison</h1>
+                        <p class="subtitle">Compare multiple assets side by side</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn btn-secondary" onclick="clearComparison()">Clear All</button>
+                        <button class="btn btn-primary" onclick="generateComparisonPDF()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
+                            Export Comparison
+                        </button>
+                    </div>
+                </header>
+
+                <div id="comparisonContent">
+                    <div id="comparisonEmpty" class="comparison-empty">
+                        <div class="empty-illustration">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M18 20V10M12 20V4M6 20v-6"/>
+                            </svg>
+                        </div>
+                        <h3>No Assets to Compare</h3>
+                        <p>Add assets from valuations to compare them side by side</p>
+                        <button class="btn btn-primary" onclick="showSection('valuation')">Create Valuation</button>
+                    </div>
+
+                    <div id="comparisonTable" class="comparison-table-container hidden">
+                        <table class="comparison-data-table">
+                            <thead id="comparisonHeader">
+                                <!-- Populated by JavaScript -->
+                            </thead>
+                            <tbody id="comparisonBody">
+                                <!-- Populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reports Section -->
+            <section id="reports" class="content-section">
+                <header class="section-header">
+                    <div>
+                        <h1>Reports</h1>
+                        <p class="subtitle">View and download valuation reports</p>
+                    </div>
+                </header>
+
+                <div id="reportsContent">
+                    <div id="reportsEmpty" class="reports-empty">
+                        <div class="empty-illustration">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                            </svg>
+                        </div>
+                        <h3>No Reports Generated</h3>
+                        <p>Generate reports from your valuations to see them here</p>
+                        <button class="btn btn-primary" onclick="showSection('valuation')">Create Valuation</button>
+                    </div>
+
+                    <div id="reportsList" class="reports-list hidden">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden">
+        <div class="toast-content">
+            <svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+            <span class="toast-message"></span>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
